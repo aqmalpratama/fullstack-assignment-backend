@@ -1,8 +1,8 @@
 import pymongo
 import json
 
-from flask import Flask, Response, request, make_response, jsonify
 from flask_cors import CORS, cross_origin
+from flask import Flask, Response, request, make_response, jsonify
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
@@ -52,7 +52,7 @@ def getSelectedPond(id):
        return response
 
 @app.route('/pond/<id>', methods=['PUT'])
-def pondUpdate(id):
+def updatePond(id):
     try:
         if request.method == 'PUT':
             data = {
@@ -60,8 +60,8 @@ def pondUpdate(id):
                 "location": request.form['location'],
                 "shape": request.form['shape'],
                 "material": request.form['material'],
-                }
-            dbResponse = db.pond.update_one({'_id': ObjectId(id)}, {'$set': data})
+            }
+            dbResponse = db.pond.update_one({'_id': ObjectId(id)}, {'$setData': data})
             response = make_response(jsonify({"message": "Pond updated"}),200)
             response.headers["Content-Type"] = "application/json"
             return response
