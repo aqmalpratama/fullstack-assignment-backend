@@ -2,7 +2,7 @@ import pymongo
 import json
 
 from flask_cors import CORS, cross_origin
-from flask import Flask, request, jsonify, Response, make_response
+from flask import Flask, request, jsonify, Response
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
@@ -21,66 +21,73 @@ except:
 @app.route("/", methods=["GET"])
 def getPond():
     try:
-        data = list(db.pond.find())
-        for pond in data:
+        value = list(db.pond.find())
+        for pond in value:
             pond['_id'] = str(pond['_id'])
-        response = make_response(jsonify(data,{"message": "Pond fetched"}),200)
+        response = jsonify(value, {"message": "Pond fetched"})
+        response.status_code = 200
         response.headers["Content-Type"] = "application/json"
-        return response
     except Exception as e:
-       response = make_response(jsonify({"error":str(e)}),500)
+       response = jsonify({"error": str(e)})
+       response.status_code = 400
        response.headers["Content-Type"] = "application/json"
-       return response
+    finally:
+        return response
       
 @app.route('/pond/<id>', methods=['GET'])
 def getSelectedPond(id):
     try:
-        data = db.pond.find_one({'_id': ObjectId(id)})
-        data['_id'] = str(data['_id'])
-        response = make_response(jsonify(data,{"message": "Pond selected"}),200)
+        value = db.pond.find_one({'_id': ObjectId(id)})
+        value['_id'] = str(value['_id'])
+        response = jsonify(data, {"message": "Pond selected"})
+        response.status_code = 200
         response.headers["Content-Type"] = "application/json"
-        return response
     except Exception as e:
-       response = make_response(jsonify({"error":str(e)}),500)
+       response = jsonify({"error": str(e)})
+       response.status_code = 400
        response.headers["Content-Type"] = "application/json"
+    finally:
        return response
       
 @app.route('/registerPond', methods=['POST'])
 def registerPond():
     try:
-        data = {
+        value = {
             "name": request.form['name'],
             "location": request.form['location'],
             "shape": request.form['shape'],
             "material": request.form['material']
         }
-        dbResponse = db.pond.insert_one(data)
-        response = make_response(jsonify({"message": "Pond created"}),200)
+        executeDb = db.pond.insert_one(value)
+        response = jsonify({"message": "Pond created"})
+        response.status_code = 200
         response.headers["Content-Type"] = "application/json"
-        return response
     except Exception as e: 
-        response = make_response(jsonify({"error":str(e)}),500)
+        response = jsonify({"error": str(e)})
+        response.status_code = 400
         response.headers["Content-Type"] = "application/json"
+    finally:
         return response
 
 @app.route('/pond/<id>', methods=['PUT'])
 def updatePond(id):
     try:
         if request.method == 'PUT':
-            data = {
+            value = {
                 "name": request.form['name'],
                 "location": request.form['location'],
                 "shape": request.form['shape'],
                 "material": request.form['material'],
             }
-            executeDb = db.pond.update_one({'_id': ObjectId(id)}, {'$set': data})
-            response = make_response(jsonify({"message": "Pond updated"}),200)
+            executeDb = db.pond.update_one({'_id': ObjectId(id)}, {'$set': value})
+            response = jsonify({"message": "Pond updated"})
+            response.status_code = 200
             response.headers["Content-Type"] = "application/json"
-            return response
-        return make_response(jsonify({"message": "Pond already updated"}), 200)
     except Exception as e:
-       response = make_response(jsonify({"error":str(e)}),5 00)
+       response = jsonify({"error":str(e)})
+       response.status_code = 400
        response.headers["Content-Type"] = "application/json"
+    finally:
        return response
     
 if __name__ == '__main__':
