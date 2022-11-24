@@ -24,13 +24,7 @@ def getPond():
         data = list(db.pond.find())
         for pond in data:
             pond['_id'] = str(pond['_id'])
-
-        response = make_response(
-                jsonify(data,
-                    {"message": "Pond fetched"}
-                ),
-                200,
-            )
+        response = make_response(jsonify(data,{"message": "Pond fetched"}),200,)
         response.headers["Content-Type"] = "application/json"
         return response
     except Exception as e:
@@ -71,7 +65,7 @@ def updatePond(id):
        response.headers["Content-Type"] = "application/json"
        return response
       
-@app.route('/register', methods=['POST'])
+@app.route('/registerPond', methods=['POST'])
 def registerPond():
     try:
         data = {
