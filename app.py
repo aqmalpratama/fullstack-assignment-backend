@@ -39,7 +39,7 @@ def getSelectedPond(id):
     try:
         value = db.pond.find_one({'_id': ObjectId(id)})
         value['_id'] = str(value['_id'])
-        response = jsonify(data, {"message": "Pond selected"})
+        response = jsonify(value, {"message": "Pond selected"})
         response.status_code = 200
         response.headers["Content-Type"] = "application/json"
     except Exception as e:
