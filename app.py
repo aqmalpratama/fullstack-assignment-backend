@@ -2,7 +2,7 @@ import pymongo
 import json
 
 from flask_cors import CORS, cross_origin
-from flask import Flask, request, jsonify, Response, , make_response
+from flask import Flask, request, jsonify, Response, make_response
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
