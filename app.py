@@ -44,26 +44,6 @@ def getSelectedPond(id):
        response = make_response(jsonify({"error":str(e)}),500)
        response.headers["Content-Type"] = "application/json"
        return response
-
-@app.route('/pond/<id>', methods=['PUT'])
-def updatePond(id):
-    try:
-        if request.method == 'PUT':
-            data = {
-                "name": request.form['name'],
-                "location": request.form['location'],
-                "shape": request.form['shape'],
-                "material": request.form['material'],
-            }
-            dbResponse = db.pond.update_one({'_id': ObjectId(id)}, {'$setData': data})
-            response = make_response(jsonify({"message": "Pond updated"}),200)
-            response.headers["Content-Type"] = "application/json"
-            return response
-        return make_response(jsonify({"message": "Pond already updated"}),200)
-    except Exception as e:
-       response = make_response(jsonify({"error":str(e)}),500)
-       response.headers["Content-Type"] = "application/json"
-       return response
       
 @app.route('/registerPond', methods=['POST'])
 def registerPond():
