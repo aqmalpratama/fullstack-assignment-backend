@@ -2,7 +2,7 @@ import pymongo
 import json
 
 from flask_cors import CORS, cross_origin
-from flask import Flask, Response, request, make_response, jsonify
+from flask import Flask, request, jsonify, Response, , make_response
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def getPond():
         data = list(db.pond.find())
         for pond in data:
             pond['_id'] = str(pond['_id'])
-        response = make_response(jsonify(data,{"message": "Pond fetched"}),200,)
+        response = make_response(jsonify(data,{"message": "Pond fetched"}),200)
         response.headers["Content-Type"] = "application/json"
         return response
     except Exception as e:
@@ -37,7 +37,7 @@ def getSelectedPond(id):
     try:
         data = db.pond.find_one({'_id': ObjectId(id)})
         data['_id'] = str(data['_id'])
-        response = make_response(jsonify(data,{"message": "Pond get"}),200)
+        response = make_response(jsonify(data,{"message": "Pond selected"}),200)
         response.headers["Content-Type"] = "application/json"
         return response
     except Exception as e:
