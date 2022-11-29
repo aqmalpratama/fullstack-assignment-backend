@@ -13,42 +13,42 @@ try:
         host="mongodb://localhost:27017",
         serverSelectionTimeoutMS = 3000
     )
-    db = mongo.fishdbapi
+    db = mongo.fishdb
     mongo.server_info()
 except:
     print("Can't connect to database")
     
-@app.route("/", methods=["GET"])
-def getPond():
+@app.route("/pond", methods=["GET"])
+def getAllPond():
     try:
         value = list(db.pond.find())
         for pond in value:
             pond['_id'] = str(pond['_id'])
-        response = jsonify(value, {"message": "Pond fetched"})
+        response = jsonify(value)
         response.status_code = 200
         response.headers["Content-Type"] = "application/json"
     except Exception as e:
-       response = jsonify({"error": str(e)})
-       response.status_code = 400
-       response.headers["Content-Type"] = "application/json"
+        response = jsonify({"message": "Error fetching pond"})
+        response.status_code = 400
+        response.headers["Content-Type"] = "application/json"
     finally:
         return response
-      
+
 @app.route('/pond/<id>', methods=['GET'])
 def getSelectedPond(id):
     try:
         value = db.pond.find_one({'_id': ObjectId(id)})
         value['_id'] = str(value['_id'])
-        response = jsonify(value, {"message": "Pond selected"})
+        response = jsonify(value)
         response.status_code = 200
         response.headers["Content-Type"] = "application/json"
     except Exception as e:
-       response = jsonify({"error": str(e)})
-       response.status_code = 400
-       response.headers["Content-Type"] = "application/json"
+        response = jsonify({'message': 'Pond not found'})
+        response.status_code = 400
+        response.headers["Content-Type"] = "application/json"
     finally:
-       return response
-      
+        return response
+
 @app.route('/registerPond', methods=['POST'])
 def registerPond():
     try:
@@ -63,7 +63,7 @@ def registerPond():
         response.status_code = 200
         response.headers["Content-Type"] = "application/json"
     except Exception as e: 
-        response = jsonify({"error": str(e)})
+        response = jsonify({"message": "Error creating pond"})
         response.status_code = 400
         response.headers["Content-Type"] = "application/json"
     finally:
@@ -84,11 +84,11 @@ def updatePond(id):
             response.status_code = 200
             response.headers["Content-Type"] = "application/json"
     except Exception as e:
-       response = jsonify({"error":str(e)})
-       response.status_code = 400
-       response.headers["Content-Type"] = "application/json"
+        response = jsonify({"message": "Error updating pond"})
+        response.status_code = 400
+        response.headers["Content-Type"] = "application/json"
     finally:
-       return response
+        return response
     
 if __name__ == '__main__':
     app.run(debug=True)
